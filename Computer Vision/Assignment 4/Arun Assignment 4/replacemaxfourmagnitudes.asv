@@ -1,0 +1,17 @@
+function [outputIm] = replacemaxfourmagnitudes(inputImg,elements)
+ inputIm = padarray(inputIm,[1 1],0,'both');
+    [inputImRowSize,inputImColSize] = size(inputIm);
+    for i = 1:size(elements)
+        for j = 2:inputImRowSize-1
+            for k = 2:inputImColSize-1
+                if abs(inputIm(j,k)) == elements(i)
+                    neighborMatrix = inputIm(j-1:j+1,k-1:k+1);
+                    sum1 = sum(neighborMatrix(:)) - inputIm(j,k);
+                    inputIm(j,k) = sum1/8;
+                end
+            end
+        end
+    end
+    outputIm = inputIm(2:inputImRowSize-1,2:inputImColSize-1);
+end
+
