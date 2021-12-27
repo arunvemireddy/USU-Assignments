@@ -1,0 +1,33 @@
+
+ Query 3:   SELECT DISTINCT
+    appearances.yearid AS 'years',
+    master.nameFirst AS 'FirstName',
+    master.nameLast AS 'LasName'
+FROM
+    master,
+    appearances
+WHERE
+    master.masterid = appearances.masterid
+        AND master.masterid IN (SELECT
+            masterid
+        FROM
+            (SELECT
+                team1.masterid, COUNT(*) AS stint
+            FROM
+                (SELECT DISTINCT
+                masterid, yearid
+            FROM
+                appearances
+            ORDER BY masterid , yearid) AS team1
+            LEFT JOIN (SELECT DISTINCT
+                masterid, yearid
+            FROM
+                appearances
+            ORDER BY masterid , yearid) AS team2 ON team1.yearid = team2.yearid + 1
+                AND team1.masterid = team2.masterid
+            WHERE
+                team2.yearid IS NULL
+            GROUP BY team1.masterid) AS stint
+        WHERE
+            stint >= 5)
+ORDER BY nameLast , yearid.
